@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -39,17 +40,17 @@ namespace WebApiPhase2
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var connection = this.Configuration.GetConnectionString("Server=localhost;Database=Northwind;Trusted_Connection=True;");
-
             //ª`¤Jµù¥U
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IAccountRepository, AccountRepository>();
-            services.AddScoped<IDatabaseHelper>(x => new DatabaseHelper(connection));
+            services.AddScoped<IDatabaseHelper>(x => new DatabaseHelper(@"Server=localhost;Database=Northwind;Trusted_Connection=True;"));
 
             //AutoMapper
             services.AddAutoMapper(
                 typeof(ControllerProfile),
                 typeof(ServiceProfile));
+
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,11 +65,10 @@ namespace WebApiPhase2
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapControllers();
             });
+
+            app.UseHttpsRedirection();
         }
     }
 }

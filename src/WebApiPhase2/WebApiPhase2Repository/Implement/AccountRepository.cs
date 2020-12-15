@@ -1,13 +1,23 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using WebApiPhase2Repository.DataModels;
+using WebApiPhase2Repository.Infrastructure;
 using WebApiPhase2Repository.Interface;
 
 namespace WebApiPhase2Repository.Implement
 {
     public class AccountRepository : IAccountRepository
     {
+        private readonly IDatabaseHelper _databaseHelper;
+
+        public AccountRepository(IDatabaseHelper databaseHelper)
+        {
+            this._databaseHelper = databaseHelper;
+        }
+
         /// <summary>
         /// 取得單筆帳號資訊
         /// </summary>
@@ -15,7 +25,27 @@ namespace WebApiPhase2Repository.Implement
         /// <returns></returns>
         public AccountDataModel GetAccount(string account)
         {
-            throw new NotImplementedException();
+            var sql = @"SELECT [Account]
+                              ,[Password]
+                              ,[Phone]
+                              ,[Email]
+                              ,[CreateDate]
+                              ,[ModifyDate]
+                              ,[ModifyUser]
+                          FROM [Northwind].[dbo].[Users]
+                          WHERE Account = @Account";
+
+            var parameter = new DynamicParameters();
+            parameter.Add("@Account", account, DbType.String);
+
+            using (IDbConnection conn = this._databaseHelper.GetConnection())
+            {
+                var result = conn.QueryFirstOrDefault<AccountDataModel>(
+                    sql,
+                    parameter);
+
+                return result;
+            }
         }
     }
 }
