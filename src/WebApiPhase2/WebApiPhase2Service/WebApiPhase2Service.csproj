@@ -8,4 +8,12 @@
     <Folder Include="InfoModels\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebApiPhase2Repository\WebApiPhase2Repository.csproj" />
+  </ItemGroup>
+
 </Project>
