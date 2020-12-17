@@ -47,5 +47,29 @@ namespace WebApiPhase2Repository.Implement
                 return result;
             }
         }
+
+        /// <summary>
+        /// 取得帳號列表
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<AccountDataModel> GetAccountList()
+        {
+            var sql = @"SELECT [Account]
+                              ,[Password]
+                              ,[Phone]
+                              ,[Email]
+                              ,[CreateDate]
+                              ,[ModifyDate]
+                              ,[ModifyUser]
+                          FROM [Northwind].[dbo].[Users]";
+
+            using (IDbConnection conn = this._databaseHelper.GetConnection())
+            {
+                var result = conn.Query<AccountDataModel>(
+                    sql);
+
+                return result;
+            }
+        }
     }
 }

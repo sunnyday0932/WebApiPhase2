@@ -1,4 +1,5 @@
-﻿using WebApiPhase2Repository.DataModels;
+﻿using System.Collections.Generic;
+using WebApiPhase2Repository.DataModels;
 
 namespace WebApiPhase2Repository.Interface
 {
@@ -10,5 +11,11 @@ namespace WebApiPhase2Repository.Interface
         /// <param name="account"></param>
         /// <returns></returns>
         public AccountDataModel GetAccount(string account);
+
+        /// <summary>
+        /// 取得帳號列表
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<AccountDataModel> GetAccountList();
     }
 }

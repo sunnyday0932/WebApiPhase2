@@ -13,5 +13,11 @@ namespace WebApiPhase2Service.Interface
         /// <param name="account"></param>
         /// <returns></returns>
         public AccountDto GetAccount(string account);
+
+        /// <summary>
+        /// 取得帳號列表
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<AccountDto> GetAccountList();
     }
 }

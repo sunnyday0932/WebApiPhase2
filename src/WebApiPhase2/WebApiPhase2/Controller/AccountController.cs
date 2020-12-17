@@ -38,5 +38,19 @@ namespace WebApiPhase2.Controller
 
             return result;
         }
+
+        /// <summary>
+        /// 取得帳號列表
+        /// </summary>
+        /// <returns></returns>
+        [Route("")]
+        [HttpGet]
+        public IEnumerable<AccountViewModel> GetAccountList()
+        {
+            var data = this._accountService.GetAccountList();
+            var result = this._mapper.Map<IEnumerable<AccountViewModel>>(data);
+
+            return result;
+        }
     }
 }
