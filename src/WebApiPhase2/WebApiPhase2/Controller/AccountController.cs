@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebApiPhase2.Parameters;
 using WebApiPhase2.ViewModles;
+using WebApiPhase2Service.InfoModels;
 using WebApiPhase2Service.Interface;
 
 namespace WebApiPhase2.Controller
@@ -49,6 +51,22 @@ namespace WebApiPhase2.Controller
         {
             var data = this._accountService.GetAccountList();
             var result = this._mapper.Map<IEnumerable<AccountViewModel>>(data);
+
+            return result;
+        }
+
+        /// <summary>
+        /// 新增帳號
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        [Route("")]
+        [HttpPost]
+        public ResultViewModel AddAccount([FromBody]AccountParameter parameter)
+        {
+            var info = this._mapper.Map<AccountInfoModel>(parameter);
+            var data = this._accountService.AddAccount(info);
+            var result = this._mapper.Map<ResultViewModel>(data);
 
             return result;
         }

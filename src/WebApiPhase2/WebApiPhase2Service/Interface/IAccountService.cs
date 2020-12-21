@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using WebApiPhase2Service.Dtos;
+using WebApiPhase2Service.InfoModels;
 
 namespace WebApiPhase2Service.Interface
 {
@@ -19,5 +20,12 @@ namespace WebApiPhase2Service.Interface
         /// </summary>
         /// <returns></returns>
         public IEnumerable<AccountDto> GetAccountList();
+
+        /// <summary>
+        /// 新增帳號
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public ResultDto AddAccount(AccountInfoModel info);
     }
 }

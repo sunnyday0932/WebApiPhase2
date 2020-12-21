@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Parameters\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\WebApiPhase2Repository\WebApiPhase2Repository.csproj" />
     <ProjectReference Include="..\WebApiPhase2Service\WebApiPhase2Service.csproj" />
   </ItemGroup>

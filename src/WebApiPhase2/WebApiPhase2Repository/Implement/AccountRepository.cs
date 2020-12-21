@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using WebApiPhase2Repository.Conditions;
 using WebApiPhase2Repository.DataModels;
 using WebApiPhase2Repository.Infrastructure;
 using WebApiPhase2Repository.Interface;
@@ -16,6 +17,48 @@ namespace WebApiPhase2Repository.Implement
         public AccountRepository(IDatabaseHelper databaseHelper)
         {
             this._databaseHelper = databaseHelper;
+        }
+
+        /// <summary>
+        /// 新增帳號
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public bool AddAccount(AccountCondition condition)
+        {
+            var sql = @"INSERT users
+                               (account,
+                                password,
+                                phone,
+                                email,
+                                createdate,
+                                modifydate,
+                                modifyuser)
+                        VALUES(@Account,
+                               @Password,
+                               @Phone,
+                               @Email,
+                               @CreateDate,
+                               @ModifyDate,
+                               @ModifyUser) ";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@Account", condition.Account, DbType.String);
+            parameters.Add("@Password", condition.Password, DbType.String);
+            parameters.Add("@Phone", condition.Phone, DbType.String);
+            parameters.Add("@Email", condition.Email, DbType.String);
+            parameters.Add("@CreateDate", condition.CreateDate, DbType.DateTime);
+            parameters.Add("@ModifyDate", condition.ModifyDate, DbType.DateTime);
+            parameters.Add("@ModifyUser", condition.ModifyUser, DbType.String);
+
+            using (IDbConnection conn = this._databaseHelper.GetConnection())
+            {
+                var result = conn.Execute(
+                    sql,
+                    parameters);
+
+                return result > 0;
+            }
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using WebApiPhase2Repository.Conditions;
 using WebApiPhase2Repository.DataModels;
 
 namespace WebApiPhase2Repository.Interface
@@ -17,5 +18,12 @@ namespace WebApiPhase2Repository.Interface
         /// </summary>
         /// <returns></returns>
         public IEnumerable<AccountDataModel> GetAccountList();
+
+        /// <summary>
+        /// 新增帳號
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public bool AddAccount(AccountCondition condition);
     }
 }
