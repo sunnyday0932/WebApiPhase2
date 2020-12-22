@@ -114,5 +114,92 @@ namespace WebApiPhase2Repository.Implement
                 return result;
             }
         }
+
+        /// <summary>
+        /// 取得密碼
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public string GetAccountPassword(string account)
+        {
+            var sql = @"SELECT Password
+                        FROM Users
+                        WHERE Account = @Account";
+
+            var parameter = new DynamicParameters();
+            parameter.Add("@Account", account, DbType.String);
+
+            using (IDbConnection conn = this._databaseHelper.GetConnection())
+            {
+                var result = conn.QueryFirstOrDefault<string>(
+                    sql,
+                    parameter);
+
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// 刪除帳號
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public bool RemoveAccount(string account)
+        {
+            var sql = @"Delete Users
+                        WHERE Account = @Account";
+
+            var parameter = new DynamicParameters();
+            parameter.Add("@Account", account, DbType.String);
+
+            using (IDbConnection conn = this._databaseHelper.GetConnection())
+            {
+                var result = conn.Execute(
+                    sql,
+                    parameter);
+
+                return result > 0;
+            }
+        }
+
+        /// <summary>
+        /// 更新帳號資訊
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public bool UpdateAccount(AccountCondition condition)
+        {
+            var sql = @"Update Users
+                        SET ModifyDate = @ModifyDate,
+                            ModifyUser = @ModifyUser";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@ModifyDate", condition.ModifyDate, DbType.DateTime);
+            parameters.Add("@ModifyUser", condition.ModifyUser, DbType.String);
+            parameters.Add("@Account", condition.Account, DbType.String);
+
+            if (string.IsNullOrWhiteSpace(condition.Email).Equals(false))
+            {
+                sql += @", Email = @Email ";
+                parameters.Add("@Email", condition.Email, DbType.String);
+            }
+
+            if (string.IsNullOrWhiteSpace(condition.Phone).Equals(false))
+            {
+                sql += @", Phone = @Phone ";
+                parameters.Add("@Phone", condition.Phone, DbType.String);
+            }
+
+            sql += @" WHERE Account = @Account";
+
+            using (IDbConnection conn = this._databaseHelper.GetConnection())
+            {
+                var result = conn.Execute(
+                    sql,
+                    parameters);
+
+                return result > 0;
+            }
+        }
     }
 }

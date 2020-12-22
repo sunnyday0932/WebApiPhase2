@@ -70,5 +70,48 @@ namespace WebApiPhase2.Controller
 
             return result;
         }
+
+        /// <summary>
+        /// 刪除帳號
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        [Route("")]
+        [HttpDelete]
+        public ResultViewModel RemoveAccount([FromBody]AccountParameter parameter)
+        {
+            var info = this._mapper.Map<AccountInfoModel>(parameter);
+            var data = this._accountService.RemoveAccount(info);
+            var result = this._mapper.Map<ResultViewModel>(data);
+
+            return result;
+        }
+
+        /// <summary>
+        /// 更新帳號資訊
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        [Route("")]
+        [HttpPatch]
+        public ResultViewModel UpdateAccount([FromBody]AccountParameter parameter)
+        {
+            var info = this._mapper.Map<AccountInfoModel>(parameter);
+            var data = this._accountService.UpdateAccount(info);
+            var result = this._mapper.Map<ResultViewModel>(data);
+
+            return result;
+        }
+
+        /// <summary>
+        /// 忘記密碼
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        [Route("forget")]
+        [HttpPatch]
+        public ResultViewModel ForgetPassword([FromBody]AccountParameter parameter)
+        {
+        }
     }
 }

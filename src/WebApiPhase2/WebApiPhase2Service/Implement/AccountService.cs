@@ -181,5 +181,115 @@ namespace WebApiPhase2Service.Implement
                 return false;
             }
         }
+
+        /// <summary>
+        /// 刪除帳號
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public ResultDto RemoveAccount(AccountInfoModel info)
+        {
+            if (string.IsNullOrWhiteSpace(info.Account) ||
+                string.IsNullOrWhiteSpace(info.Email) ||
+                string.IsNullOrWhiteSpace(info.Phone))
+            {
+                throw new Exception("請檢查輸入欄位，缺一不可！");
+            }
+
+            var checkInfo = this._accountRepository.GetAccount(info.Account);
+
+            if (checkInfo == null)
+            {
+                return new ResultDto
+                {
+                    Success = false,
+                    Message = "請確認要刪除的帳號！"
+                };
+            }
+
+            if (checkInfo.Email != info.Email)
+            {
+                return new ResultDto
+                {
+                    Success = false,
+                    Message = "請確認輸入的EMail是否與註冊時一致！"
+                };
+            }
+
+            if (checkInfo.Phone != info.Phone)
+            {
+                return new ResultDto
+                {
+                    Success = false,
+                    Message = "請確認輸入的電話是否與註冊時一致！"
+                };
+            }
+
+            var result = this._accountRepository.RemoveAccount(info.Account);
+
+            return new ResultDto
+            {
+                Success = result,
+                Message = result ? "刪除成功" : "刪除失敗"
+            };
+        }
+
+        /// <summary>
+        /// 更新帳號資訊
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public ResultDto UpdateAccount(AccountInfoModel info)
+        {
+            if (string.IsNullOrWhiteSpace(info.Account) ||
+                string.IsNullOrWhiteSpace(info.Password))
+            {
+                throw new Exception("請檢查輸入欄位，缺一不可！");
+            }
+
+            var checkPassword = this._accountRepository.GetAccountPassword(info.Account);
+
+            if (string.IsNullOrWhiteSpace(checkPassword))
+            {
+                return new ResultDto
+                {
+                    Success = false,
+                    Message = "請確認要更新的帳號！"
+                };
+            }
+
+            var convertPassword = ConverPassword(info.Account, info.Password);
+
+            if (checkPassword != convertPassword)
+            {
+                return new ResultDto
+                {
+                    Success = false,
+                    Message = "請確認輸入的密碼是否與註冊時一致！"
+                };
+            }
+
+            var condition = this._mapper.Map<AccountCondition>(info);
+            condition.ModifyDate = DateTime.Now;
+            condition.ModifyUser = info.Account;
+
+            var result = this._accountRepository.UpdateAccount(condition);
+
+            return new ResultDto
+            {
+                Success = result,
+                Message = result ? "更新成功" : "更新失敗"
+            };
+        }
+
+        /// <summary>
+        /// 忘記密碼
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public ResultDto ForgetPassword(AccountInfoModel info)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

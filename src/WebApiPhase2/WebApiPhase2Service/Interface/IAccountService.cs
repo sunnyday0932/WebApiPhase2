@@ -27,5 +27,26 @@ namespace WebApiPhase2Service.Interface
         /// <param name="info"></param>
         /// <returns></returns>
         public ResultDto AddAccount(AccountInfoModel info);
+
+        /// <summary>
+        /// 刪除帳號
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public ResultDto RemoveAccount(AccountInfoModel info);
+
+        /// <summary>
+        /// 更新帳號資訊
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public ResultDto UpdateAccount(AccountInfoModel info);
+
+        /// <summary>
+        /// 忘記密碼
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public ResultDto ForgetPassword(AccountInfoModel info);
     }
 }
