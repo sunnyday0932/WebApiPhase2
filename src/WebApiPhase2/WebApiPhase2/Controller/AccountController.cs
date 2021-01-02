@@ -112,6 +112,11 @@ namespace WebApiPhase2.Controller
         [HttpPatch]
         public ResultViewModel ForgetPassword([FromBody]AccountParameter parameter)
         {
+            var info = this._mapper.Map<AccountInfoModel>(parameter);
+            var data = this._accountService.ForgetPassword(info);
+            var result = this._mapper.Map<ResultViewModel>(data);
+
+            return result;
         }
     }
 }

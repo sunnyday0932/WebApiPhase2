@@ -62,6 +62,31 @@ namespace WebApiPhase2Repository.Implement
         }
 
         /// <summary>
+        /// 忘記密碼
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public bool ForgetPassword(AccountCondition condition)
+        {
+            var sql = @"  UPDATE Users
+                          SET Password = @Password
+                          WHERE Account = @Account";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@Password", condition.Password, DbType.String);
+            parameters.Add("@Account", condition.Account, DbType.String);
+
+            using (IDbConnection conn = this._databaseHelper.GetConnection())
+            {
+                var result = conn.Execute(
+                    sql,
+                    parameters);
+
+                return result > 0;
+            }
+        }
+
+        /// <summary>
         /// 取得單筆帳號資訊
         /// </summary>
         /// <param name="account"></param>

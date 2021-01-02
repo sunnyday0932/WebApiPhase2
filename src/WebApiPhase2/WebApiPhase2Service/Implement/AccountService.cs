@@ -289,7 +289,54 @@ namespace WebApiPhase2Service.Implement
         /// <returns></returns>
         public ResultDto ForgetPassword(AccountInfoModel info)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(info.Account) ||
+                string.IsNullOrWhiteSpace(info.Email) ||
+                string.IsNullOrWhiteSpace(info.Phone) ||
+                string.IsNullOrWhiteSpace(info.Password))
+            {
+                throw new Exception("請檢查輸入欄位，缺一不可！");
+            }
+
+            var checkInfo = this._accountRepository.GetAccount(info.Account);
+            if (checkInfo == null)
+            {
+                return new ResultDto
+                {
+                    Success = false,
+                    Message = "請確認輸入之帳號！"
+                };
+            }
+
+            if (checkInfo.Email != info.Email)
+            {
+                return new ResultDto
+                {
+                    Success = false,
+                    Message = "請確認輸入的Email，是否與註冊時一致！"
+                };
+            }
+
+            if (checkInfo.Phone != info.Phone)
+            {
+                return new ResultDto
+                {
+                    Success = false,
+                    Message = "請確認輸入的電話，是否與註冊時一致！"
+                };
+            }
+
+            var condition = this._mapper.Map<AccountCondition>(info);
+            condition.ModifyDate = DateTime.Now;
+            condition.ModifyUser = condition.Account;
+            condition.Password = ConverPassword(condition.Account, condition.Password);
+
+            var result = this._accountRepository.ForgetPassword(condition);
+
+            return new ResultDto
+            {
+                Success = result,
+                Message = result ? "更新密碼成功" : "更新密碼失敗"
+            };
         }
     }
 }
