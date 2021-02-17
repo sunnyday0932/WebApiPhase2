@@ -3,17 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiPhase2", "WebApiPhase2\WebApiPhase2.csproj", "{91A95D60-791C-4529-BDD4-A70A758A3A99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiPhase2", "WebApiPhase2\WebApiPhase2.csproj", "{91A95D60-791C-4529-BDD4-A70A758A3A99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiPhase2Service", "WebApiPhase2Service\WebApiPhase2Service.csproj", "{AD259F0F-7983-446A-99B8-20D1ED57FBFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiPhase2Service", "WebApiPhase2Service\WebApiPhase2Service.csproj", "{AD259F0F-7983-446A-99B8-20D1ED57FBFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiPhase2Repository", "WebApiPhase2Repository\WebApiPhase2Repository.csproj", "{47F52A1D-323E-4482-A593-FD6E90F21FFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiPhase2Repository", "WebApiPhase2Repository\WebApiPhase2Repository.csproj", "{47F52A1D-323E-4482-A593-FD6E90F21FFD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0.WebApi", "0.WebApi", "{1A732F41-D848-4EDE-BA2E-7A7D09FB5C3F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.Service", "1.Service", "{49809E99-5FE3-4A6C-A8A9-C7C975AB4A76}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Repository", "2.Repository", "{923EF8E5-02F3-4A1D-9E8F-35424232EA86}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.Unit-Test", "3.Unit-Test", "{5B010054-D489-4EA3-B2D3-9739533A4DD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiPhase2Tests", "WebApiPhase2Tests\WebApiPhase2Tests.csproj", "{0FF42C9A-1319-41ED-A3B7-1F048C5BEC16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,10 @@ Global
 		{47F52A1D-323E-4482-A593-FD6E90F21FFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47F52A1D-323E-4482-A593-FD6E90F21FFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47F52A1D-323E-4482-A593-FD6E90F21FFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FF42C9A-1319-41ED-A3B7-1F048C5BEC16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FF42C9A-1319-41ED-A3B7-1F048C5BEC16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FF42C9A-1319-41ED-A3B7-1F048C5BEC16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FF42C9A-1319-41ED-A3B7-1F048C5BEC16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +49,7 @@ Global
 		{91A95D60-791C-4529-BDD4-A70A758A3A99} = {1A732F41-D848-4EDE-BA2E-7A7D09FB5C3F}
 		{AD259F0F-7983-446A-99B8-20D1ED57FBFC} = {49809E99-5FE3-4A6C-A8A9-C7C975AB4A76}
 		{47F52A1D-323E-4482-A593-FD6E90F21FFD} = {923EF8E5-02F3-4A1D-9E8F-35424232EA86}
+		{0FF42C9A-1319-41ED-A3B7-1F048C5BEC16} = {5B010054-D489-4EA3-B2D3-9739533A4DD0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9490D773-8A46-43DE-85AA-D5FF4EE09A1E}
