@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using WebApiPhase2Repository.Conditions;
 using WebApiPhase2Repository.DataModels;
@@ -200,6 +201,151 @@ namespace WebApiPhase2Tests.Service
             actual.Should().BeEquivalentTo(expect);
         }
 
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "AddAccount")]
+        public void AddAccount_輸入信箱格式部正確_應回傳錯誤訊息()
+        {
+            //assert
+            var sut = this.GetSystemUnderTest();
+            var info = new AccountInfoModel
+            {
+                Account = "test",
+                Email = "test#gmail.com",
+                Password = "1234567",
+                Phone = "0917888111"
+            };
+
+            var expect = new ResultDto
+            {
+                Success = false,
+                Message = "請確認信箱格式！"
+            };
+
+            //act
+            var actual = sut.AddAccount(info);
+
+            //arrange
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "AddAccount")]
+        public void AddAccount_新增成功_應回傳正確訊息()
+        {
+            //assert
+            var sut = this.GetSystemUnderTest();
+            var info = new AccountInfoModel
+            {
+                Account = "test",
+                Email = "test@gmail.com",
+                Password = "1234567",
+                Phone = "0917888111"
+            };
+
+            this._accountRepository.AddAccount(Arg.Any<AccountCondition>()).Returns(true);
+
+            var expect = new ResultDto
+            {
+                Success = true,
+                Message = "新增成功"
+            };
+
+            //act
+            var actual = sut.AddAccount(info);
+
+            //arrange
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "AddAccount")]
+        public void AddAccount_新增失敗_應回傳錯誤訊息()
+        {
+            //assert
+            var sut = this.GetSystemUnderTest();
+            var info = new AccountInfoModel
+            {
+                Account = "test",
+                Email = "test@gmail.com",
+                Password = "1234567",
+                Phone = "0917888111"
+            };
+
+            this._accountRepository.AddAccount(Arg.Any<AccountCondition>()).Returns(false);
+
+            var expect = new ResultDto
+            {
+                Success = false,
+                Message = "新增失敗"
+            };
+
+            //act
+            var actual = sut.AddAccount(info);
+
+            //arrange
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        #endregion
+
+        #region Private Function
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "ConverPassword")]
+        public void ConverPassword_輸入密碼_應回傳加密結果()
+        {
+            //assert
+            var sut = this.GetSystemUnderTest();
+            var method = sut.GetType().GetMethod("ConverPassword", BindingFlags.Instance | BindingFlags.NonPublic);
+            var expect = "9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=";
+
+            //act
+            var actual = method.Invoke(sut, new[] { "test2", "12371324" });
+
+            //arrange
+            actual.Should().Be(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "CheckMailFormate")]
+        public void CheckMailFormate_輸入錯誤格式Mail_應回傳False()
+        {
+            //assert
+            var sut = this.GetSystemUnderTest();
+            var method = sut.GetType().GetMethod("CheckMailFormate", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            //act
+            var actual = method.Invoke(sut, new[] { "fff#gmail.com"});
+
+            //arrange
+            actual.Should().Be(false);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "CheckMailFormate")]
+        public void CheckMailFormate_輸入正確格式Mail_應回傳True()
+        {
+            //assert
+            var sut = this.GetSystemUnderTest();
+            var method = sut.GetType().GetMethod("CheckMailFormate", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            //act
+            var actual = method.Invoke(sut, new[] { "fff@gmail.com" });
+
+            //arrange
+            actual.Should().Be(true);
+        }
         #endregion
     }
 }
