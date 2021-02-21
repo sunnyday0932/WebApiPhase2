@@ -154,7 +154,7 @@ namespace WebApiPhase2Service.Implement
         /// <param name="account"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        private string ConverPassword(string account, string password)
+        internal string ConverPassword(string account, string password)
         {
             var sha256 = new SHA256CryptoServiceProvider();
             var source = Encoding.Default.GetBytes(account + password);

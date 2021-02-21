@@ -294,7 +294,7 @@ namespace WebApiPhase2Tests.Service
 
         #endregion
 
-        #region Private Function
+        #region Private and Internal Function
         [TestMethod]
         [Owner("Sian")]
         [TestCategory("AccountServiceTest")]
@@ -303,11 +303,10 @@ namespace WebApiPhase2Tests.Service
         {
             //assert
             var sut = this.GetSystemUnderTest();
-            var method = sut.GetType().GetMethod("ConverPassword", BindingFlags.Instance | BindingFlags.NonPublic);
             var expect = "9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=";
 
             //act
-            var actual = method.Invoke(sut, new[] { "test2", "12371324" });
+            var actual = sut.ConverPassword("test2", "12371324" );
 
             //arrange
             actual.Should().Be(expect);
