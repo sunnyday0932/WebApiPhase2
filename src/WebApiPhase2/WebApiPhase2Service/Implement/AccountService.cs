@@ -107,7 +107,10 @@ namespace WebApiPhase2Service.Implement
 
             var data = this._accountRepository.GetAccount(account);
             var result = this._mapper.Map<AccountDto>(data);
-            result.Phone = ConvertPhoneNumber(result.Phone);
+            if (result != null)
+            {
+                result.Phone = ConvertPhoneNumber(result.Phone);
+            }
             return result;
         }
 
@@ -117,17 +120,26 @@ namespace WebApiPhase2Service.Implement
         /// <returns></returns>
         public IEnumerable<AccountDto> GetAccountList()
         {
+            IEnumerable<AccountDto> result;
             var data = this._accountRepository.GetAccountList();
-            var result = data.Select(x => new AccountDto
+            if (data != null && 
+                data.Any())
             {
-                Phone = ConvertPhoneNumber(x.Phone),
-                Account = x.Account,
-                CreateDate = x.CreateDate.ToString("yyyy/MM/dd"),
-                Email = x.Email,
-                ModifyDate = x.ModifyDate.ToString("yyyy/MM/dd"),
-                ModifyUser = x.ModifyUser
-            });
-
+                result = data.Select(x => new AccountDto
+                {
+                    Phone = ConvertPhoneNumber(x?.Phone),
+                    Account = x?.Account,
+                    CreateDate = x.CreateDate.HasValue ? x.CreateDate.Value.ToString("yyyy/MM/dd") : null,
+                    Email = x?.Email,
+                    ModifyDate = x.ModifyDate.HasValue ? x.ModifyDate.Value.ToString("yyyy/MM/dd") : null,
+                    ModifyUser = x?.ModifyUser
+                });
+            }
+            else
+            {
+                result = null;
+            }
+            
             return result;
         }
 

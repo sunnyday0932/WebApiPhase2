@@ -22,12 +22,12 @@ namespace WebApiPhase2Repository.DataModels
         /// <summary>
         /// 建立日期
         /// </summary>
-        public DateTime CreateDate { get; set; }
+        public DateTime? CreateDate { get; set; }
 
         /// <summary>
         /// 異動日期
         /// </summary>
-        public DateTime ModifyDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
 
         /// <summary>
         /// 異動人員

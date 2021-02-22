@@ -294,6 +294,413 @@ namespace WebApiPhase2Tests.Service
 
         #endregion
 
+        #region GetAccount
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "GetAccount")]
+        public void GetAccount_Account為空_應回傳Exception()
+        {
+            //arrange
+            var sut = this.GetSystemUnderTest();
+
+            //act
+            Action actual = () => sut.GetAccount("");
+
+            //assert
+            actual.Should().Throw<Exception>()
+                .Which.Message.Contains("Account 不可為空 !");
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "GetAccount")]
+        public void GetAccount_Account有資料_應回傳正確資訊()
+        {
+            //arrange
+            var data = new AccountDataModel()
+            { 
+                Account = "test123",
+                CreateDate = DateTime.Now,
+                ModifyDate = DateTime.Now,
+                Email = "test123@gmail.com",
+                ModifyUser = "sys",
+                Phone = "0918777888"
+            };
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccount("test123").Returns(data);
+
+            var expect = new AccountDto()
+            {
+                Account = "test123",
+                CreateDate = DateTime.Now.ToString("yyyy/MM/dd"),
+                ModifyDate = DateTime.Now.ToString("yyyy/MM/dd"),
+                Email = "test123@gmail.com",
+                ModifyUser = "sys",
+                Phone = "091877****"
+            };
+            //act
+            var actual = sut.GetAccount("test123");
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "GetAccount")]
+        public void GetAccount_Account無資料_應回傳空值()
+        {
+            //arrange
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccount("test123").ReturnsForAnyArgs(x => null);
+
+            //act
+            var actual = sut.GetAccount("test123");
+
+            //assert
+            actual.Should().BeNull();
+        }
+
+        #endregion GetAccountList
+
+        #region GetAccountList
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "GetAccountList")]
+        public void GetAccountList_無資料_應回傳空值()
+        {
+            //arrange
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccountList().ReturnsForAnyArgs(x => null);
+
+            //act
+            var actual = sut.GetAccountList();
+
+            //assert
+            actual.Should().BeNull();
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "GetAccountList")]
+        public void GetAccountList_有資料_應回傳正確結果()
+        {
+            //arrange
+            var data = new List<AccountDataModel>
+            {
+                new AccountDataModel
+                {
+                    Account = "test123",
+                    CreateDate = DateTime.Now,
+                    ModifyDate = DateTime.Now,
+                    Email = "test123@gmail.com",
+                    ModifyUser = "sys",
+                    Phone = "0918777888"
+                }
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccountList().Returns(data);
+
+            var expect = new List<AccountDto>
+            {
+                new AccountDto
+                {
+                    Account = "test123",
+                    CreateDate = DateTime.Now.ToString("yyyy/MM/dd"),
+                    ModifyDate = DateTime.Now.ToString("yyyy/MM/dd"),
+                    Email = "test123@gmail.com",
+                    ModifyUser = "sys",
+                    Phone = "091877****"
+                }
+            };
+            //act
+            var actual = sut.GetAccountList();
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+        #endregion
+
+        #region RemoveAccount
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "RemoveAccount")]
+        public void RemoveAccount_傳入的Account為空_應回傳Exception()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            { 
+                Account = "",
+                Email = "test22@gmail.com",
+                Password = "9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=",
+                Phone = "0988123456"
+            };
+
+            var sut = this.GetSystemUnderTest();
+
+            //act
+            Action actual = () => sut.RemoveAccount(data);
+
+            //assert
+            actual.Should().Throw<Exception>()
+                .Which.Message.Contains("請檢查輸入欄位，缺一不可！");
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "RemoveAccount")]
+        public void RemoveAccount_傳入的Email為空_應回傳Exception()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "",
+                Password = "9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=",
+                Phone = "0988123456"
+            };
+
+            var sut = this.GetSystemUnderTest();
+
+            //act
+            Action actual = () => sut.RemoveAccount(data);
+
+            //assert
+            actual.Should().Throw<Exception>()
+                .Which.Message.Contains("請檢查輸入欄位，缺一不可！");
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "RemoveAccount")]
+        public void RemoveAccount_傳入的Phone為空_應回傳Exception()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "test22@gmail.com",
+                Password = "9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=",
+                Phone = ""
+            };
+
+            var sut = this.GetSystemUnderTest();
+
+            //act
+            Action actual = () => sut.RemoveAccount(data);
+
+            //assert
+            actual.Should().Throw<Exception>()
+                .Which.Message.Contains("請檢查輸入欄位，缺一不可！");
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "RemoveAccount")]
+        public void RemoveAccount_查無帳號_應回傳錯誤訊息()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test111122",
+                Email = "test22@gmail.com",
+                Password = "9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=",
+                Phone = "0988123456"
+            };
+
+            var expect = new ResultDto
+            {
+                Success = false,
+                Message = "請確認要刪除的帳號！"
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccount("test111122").ReturnsForAnyArgs(x => null);
+
+            //act
+            var actual = sut.RemoveAccount(data);
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "RemoveAccount")]
+        public void RemoveAccount_輸入Email與資料不一致_應回傳錯誤訊息()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test111122",
+                Email = "test22@gmail.com",
+                Password = "9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=",
+                Phone = "0988123456"
+            };
+
+            var checkInfo = new AccountDataModel
+            {
+                Account = "test111122",
+                CreateDate = DateTime.Now,
+                ModifyDate = DateTime.Now,
+                Email = "test123@gmail.com",
+                ModifyUser = "sys",
+                Phone = "0988123456"
+            };
+
+            var expect = new ResultDto
+            {
+                Success = false,
+                Message = "請確認輸入的EMail是否與註冊時一致！"
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccount("test111122").Returns(checkInfo);
+
+            //act
+            var actual = sut.RemoveAccount(data);
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "RemoveAccount")]
+        public void RemoveAccount_輸入電話與資料不一致_應回傳錯誤訊息()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test111122",
+                Email = "test123@gmail.com",
+                Password = "9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=",
+                Phone = "0988123412"
+            };
+
+            var checkInfo = new AccountDataModel
+            {
+                Account = "test111122",
+                CreateDate = DateTime.Now,
+                ModifyDate = DateTime.Now,
+                Email = "test123@gmail.com",
+                ModifyUser = "sys",
+                Phone = "0988123456"
+            };
+
+            var expect = new ResultDto
+            {
+                Success = false,
+                Message = "請確認輸入的電話是否與註冊時一致！"
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccount("test111122").Returns(checkInfo);
+
+            //act
+            var actual = sut.RemoveAccount(data);
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "RemoveAccount")]
+        public void RemoveAccount_刪除失敗_應回傳錯誤訊息()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test111122",
+                Email = "test123@gmail.com",
+                Password = "9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=",
+                Phone = "0988123456"
+            };
+
+            var checkInfo = new AccountDataModel
+            {
+                Account = "test111122",
+                CreateDate = DateTime.Now,
+                ModifyDate = DateTime.Now,
+                Email = "test123@gmail.com",
+                ModifyUser = "sys",
+                Phone = "0988123456"
+            };
+
+            var expect = new ResultDto
+            {
+                Success = false,
+                Message = "刪除失敗"
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccount("test111122").Returns(checkInfo);
+            this._accountRepository.RemoveAccount("test111122").Returns(false);
+
+            //act
+            var actual = sut.RemoveAccount(data);
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "RemoveAccount")]
+        public void RemoveAccount_刪除成功_應回傳正確訊息()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test111122",
+                Email = "test123@gmail.com",
+                Password = "9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=",
+                Phone = "0988123456"
+            };
+
+            var checkInfo = new AccountDataModel
+            {
+                Account = "test111122",
+                CreateDate = DateTime.Now,
+                ModifyDate = DateTime.Now,
+                Email = "test123@gmail.com",
+                ModifyUser = "sys",
+                Phone = "0988123456"
+            };
+
+            var expect = new ResultDto
+            {
+                Success = true,
+                Message = "刪除成功"
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccount("test111122").Returns(checkInfo);
+            this._accountRepository.RemoveAccount("test111122").Returns(true);
+
+            //act
+            var actual = sut.RemoveAccount(data);
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+        #endregion
+
         #region Private and Internal Function
         [TestMethod]
         [Owner("Sian")]
@@ -344,6 +751,41 @@ namespace WebApiPhase2Tests.Service
 
             //arrange
             actual.Should().Be(true);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "ConvertPhoneNumber")]
+        public void ConvertPhoneNumber_輸入空字串_應直接回傳空字串()
+        {
+            //assert
+            var sut = this.GetSystemUnderTest();
+            var method = sut.GetType().GetMethod("ConvertPhoneNumber", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            //act
+            var actual = method.Invoke(sut, new[] { string.Empty });
+
+            //arrange
+            actual.Should().Be(string.Empty);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "ConvertPhoneNumber")]
+        public void ConvertPhoneNumber_輸入電話號碼_應回傳轉換後結果()
+        {
+            //assert
+            var sut = this.GetSystemUnderTest();
+            var method = sut.GetType().GetMethod("ConvertPhoneNumber", BindingFlags.Instance | BindingFlags.NonPublic);
+            var expect = "091877****";
+
+            //act
+            var actual = method.Invoke(sut, new[] { "0918777888" });
+
+            //arrange
+            actual.Should().Be(expect);
         }
         #endregion
     }
