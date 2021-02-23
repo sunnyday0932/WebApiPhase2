@@ -701,6 +701,471 @@ namespace WebApiPhase2Tests.Service
         }
         #endregion
 
+        #region UpdateAccount
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "UpdateAccount")]
+        public void UpdateAccount_輸入帳號為空_應回傳Exception()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "",
+                Email = "test123@gmail.com",
+                Password = "9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=",
+                Phone = "0988123456"
+            };
+
+            var sut = this.GetSystemUnderTest();
+
+            //act
+            Action actual = () => sut.UpdateAccount(data);
+
+            //assert
+            actual.Should().Throw<Exception>()
+                .Which.Message.Contains("請檢查輸入欄位，缺一不可！");
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "UpdateAccount")]
+        public void UpdateAccount_輸入密碼為空_應回傳Exception()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "test123@gmail.com",
+                Password = "",
+                Phone = "0988123456"
+            };
+
+            var sut = this.GetSystemUnderTest();
+
+            //act
+            Action actual = () => sut.UpdateAccount(data);
+
+            //assert
+            actual.Should().Throw<Exception>()
+                .Which.Message.Contains("請檢查輸入欄位，缺一不可！");
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "UpdateAccount")]
+        public void UpdateAccount_找無輸入帳號之密碼資訊_應回傳錯誤訊息()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "test123@gmail.com",
+                Password = "9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=",
+                Phone = "0988123456"
+            };
+
+            var expect = new ResultDto()
+            {
+                Success = false,
+                Message = "請確認要更新的帳號！"
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccountPassword("test2").Returns("");
+
+            //act
+            var actual = sut.UpdateAccount(data);
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "UpdateAccount")]
+        public void UpdateAccount_輸入之密碼與註冊時不一致_應回傳錯誤訊息()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "test123@gmail.com",
+                Password = "9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=",
+                Phone = "0988123456"
+            };
+
+            var expect = new ResultDto()
+            {
+                Success = false,
+                Message = "請確認輸入的密碼是否與註冊時一致！"
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccountPassword("test2").Returns("9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWP");
+
+            //act
+            var actual = sut.UpdateAccount(data);
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "UpdateAccount")]
+        public void UpdateAccount_更新失敗_應回傳錯誤訊息()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "test123@gmail.com",
+                Password = "12371324",
+                Phone = "0988123456"
+            };
+
+            var expect = new ResultDto()
+            {
+                Success = false,
+                Message = "更新失敗"
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccountPassword("test2").Returns("9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=");
+            this._accountRepository.UpdateAccount(Arg.Any<AccountCondition>()).Returns(false);
+
+            //act
+            var actual = sut.UpdateAccount(data);
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "UpdateAccount")]
+        public void UpdateAccount_更新成功_應回傳正確訊息()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "test123@gmail.com",
+                Password = "12371324",
+                Phone = "0988123456"
+            };
+
+            var expect = new ResultDto()
+            {
+                Success = true,
+                Message = "更新成功"
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccountPassword("test2").Returns("9GYVaHLoOg+y+V/HHwKtkzBH3y8XWn14h8ifWPYViLc=");
+            this._accountRepository.UpdateAccount(Arg.Any<AccountCondition>()).Returns(true);
+
+            //act
+            var actual = sut.UpdateAccount(data);
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+        #endregion
+
+        #region ForgetPassword
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "ForgetPassword")]
+        public void ForgetPassword_輸入之帳號為空_應回傳Exception()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "",
+                Email = "test123@gmail.com",
+                Password = "12371324",
+                Phone = "0988123456"
+            };
+
+            var sut = this.GetSystemUnderTest();
+
+            //act
+            Action actual = () => sut.ForgetPassword(data);
+
+            //assert
+            actual.Should().Throw<Exception>()
+                .Which.Message.Contains("請檢查輸入欄位，缺一不可！");
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "ForgetPassword")]
+        public void ForgetPassword_輸入之Email為空_應回傳Exception()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "",
+                Password = "12371324",
+                Phone = "0988123456"
+            };
+
+            var sut = this.GetSystemUnderTest();
+
+            //act
+            Action actual = () => sut.ForgetPassword(data);
+
+            //assert
+            actual.Should().Throw<Exception>()
+                .Which.Message.Contains("請檢查輸入欄位，缺一不可！");
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "ForgetPassword")]
+        public void ForgetPassword_輸入之密碼為空_應回傳Exception()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "test2@gmail.com",
+                Password = "",
+                Phone = "0988123456"
+            };
+
+            var sut = this.GetSystemUnderTest();
+
+            //act
+            Action actual = () => sut.ForgetPassword(data);
+
+            //assert
+            actual.Should().Throw<Exception>()
+                .Which.Message.Contains("請檢查輸入欄位，缺一不可！");
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "ForgetPassword")]
+        public void ForgetPassword_輸入之電話為空_應回傳Exception()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "test2@gmail.com",
+                Password = "12371324",
+                Phone = ""
+            };
+
+            var sut = this.GetSystemUnderTest();
+
+            //act
+            Action actual = () => sut.ForgetPassword(data);
+
+            //assert
+            actual.Should().Throw<Exception>()
+                .Which.Message.Contains("請檢查輸入欄位，缺一不可！");
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "ForgetPassword")]
+        public void ForgetPassword_找無輸入之帳號資訊_應回傳錯誤訊息()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "test123@gmail.com",
+                Password = "12371324",
+                Phone = "0988123456"
+            };
+
+            var expect = new ResultDto()
+            {
+                Success = false,
+                Message = "請確認輸入之帳號！"
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccount("test2").ReturnsForAnyArgs(x => null);
+
+            //act
+            var actual = sut.ForgetPassword(data);
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "ForgetPassword")]
+        public void ForgetPassword_輸入之Email與註冊不一致_應回傳錯誤訊息()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "test123@gmail.com",
+                Password = "12371324",
+                Phone = "0988123456"
+            };
+
+            var returnData = new AccountDataModel()
+            {
+                Account = "test2",
+                Email = "test12345@gmail.com",
+                Phone = "0988123456"
+            };
+
+            var expect = new ResultDto()
+            {
+                Success = false,
+                Message = "請確認輸入的Email，是否與註冊時一致！"
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccount("test2").Returns(returnData);
+
+            //act
+            var actual = sut.ForgetPassword(data);
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "ForgetPassword")]
+        public void ForgetPassword_輸入之電話與註冊不一致_應回傳錯誤訊息()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "test123@gmail.com",
+                Password = "12371324",
+                Phone = "0988123456"
+            };
+
+            var returnData = new AccountDataModel()
+            {
+                Account = "test2",
+                Email = "test123@gmail.com",
+                Phone = "0988123777"
+            };
+
+            var expect = new ResultDto()
+            {
+                Success = false,
+                Message = "請確認輸入的電話，是否與註冊時一致！"
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccount("test2").Returns(returnData);
+
+            //act
+            var actual = sut.ForgetPassword(data);
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "ForgetPassword")]
+        public void ForgetPassword_更新失敗_應回傳錯誤訊息()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "test123@gmail.com",
+                Password = "12371324",
+                Phone = "0988123456"
+            };
+
+            var returnData = new AccountDataModel()
+            {
+                Account = "test2",
+                Email = "test123@gmail.com",
+                Phone = "0988123456"
+            };
+
+            var expect = new ResultDto()
+            {
+                Success = false,
+                Message = "更新密碼失敗"
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccount("test2").Returns(returnData);
+            this._accountRepository.ForgetPassword(Arg.Any<AccountCondition>()).Returns(false);
+
+            //act
+            var actual = sut.ForgetPassword(data);
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "ForgetPassword")]
+        public void ForgetPassword_更新成功_應回傳錯誤訊息()
+        {
+            //arrange
+            var data = new AccountInfoModel()
+            {
+                Account = "test2",
+                Email = "test123@gmail.com",
+                Password = "12371324",
+                Phone = "0988123456"
+            };
+
+            var returnData = new AccountDataModel()
+            {
+                Account = "test2",
+                Email = "test123@gmail.com",
+                Phone = "0988123456"
+            };
+
+            var expect = new ResultDto()
+            {
+                Success = true,
+                Message = "更新密碼成功"
+            };
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccount("test2").Returns(returnData);
+            this._accountRepository.ForgetPassword(Arg.Any<AccountCondition>()).Returns(true);
+
+            //act
+            var actual = sut.ForgetPassword(data);
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
+        }
+        #endregion
+
         #region Private and Internal Function
         [TestMethod]
         [Owner("Sian")]
