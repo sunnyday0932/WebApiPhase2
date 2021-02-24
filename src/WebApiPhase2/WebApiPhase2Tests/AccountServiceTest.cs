@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using CsvHelper;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using WebApiPhase2Repository.Conditions;
@@ -17,6 +21,7 @@ using WebApiPhase2Service.Mapping;
 namespace WebApiPhase2Tests.Service
 {
     [TestClass]
+    [DeploymentItem(@"TestData\AccountData.csv")]
     public class AccountServiceTest
     {
         private IAccountRepository _accountRepository;
@@ -362,6 +367,33 @@ namespace WebApiPhase2Tests.Service
 
             //assert
             actual.Should().BeNull();
+        }
+
+        [TestMethod]
+        [Owner("Sian")]
+        [TestCategory("AccountServiceTest")]
+        [TestProperty("AccountServiceTest", "GetAccount")]
+        public void GetAccount_Account有資料_應回傳正確資訊使用CSV測試()
+        {
+            //arrange
+            var sourceData = new List<AccountDataModel>();
+            using (var sr = new StreamReader(@"AccountData.csv"))
+            using (var reader = new CsvReader(sr, CultureInfo.InvariantCulture))
+            {
+                 var records = reader.GetRecords<AccountDataModel>();
+                 sourceData.AddRange(records);
+            }
+
+            var sut = this.GetSystemUnderTest();
+            this._accountRepository.GetAccount("test2").Returns(sourceData.FirstOrDefault(x => x.Account == "test2"));
+            var expect = this._mapper.Map<AccountDto>(sourceData.FirstOrDefault(x => x.Account == "test2"));
+            expect.Phone = "098812****";
+
+            //act
+            var actual = sut.GetAccount("test2");
+
+            //assert
+            actual.Should().BeEquivalentTo(expect);
         }
 
         #endregion GetAccountList
