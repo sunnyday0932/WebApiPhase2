@@ -376,17 +376,11 @@ namespace WebApiPhase2Tests.Service
         public void GetAccount_Account有資料_應回傳正確資訊使用CSV測試()
         {
             //arrange
-            var sourceData = new List<AccountDataModel>();
-            using (var sr = new StreamReader(@"AccountData.csv"))
-            using (var reader = new CsvReader(sr, CultureInfo.InvariantCulture))
-            {
-                 var records = reader.GetRecords<AccountDataModel>();
-                 sourceData.AddRange(records);
-            }
-
+            var sourceData = this.GetAccountData();
+            var returnData = sourceData.FirstOrDefault(x => x.Account == "test2");
             var sut = this.GetSystemUnderTest();
-            this._accountRepository.GetAccount("test2").Returns(sourceData.FirstOrDefault(x => x.Account == "test2"));
-            var expect = this._mapper.Map<AccountDto>(sourceData.FirstOrDefault(x => x.Account == "test2"));
+            this._accountRepository.GetAccount("test2").Returns(returnData);
+            var expect = this._mapper.Map<AccountDto>(returnData);
             expect.Phone = "098812****";
 
             //act
@@ -1285,5 +1279,22 @@ namespace WebApiPhase2Tests.Service
             actual.Should().Be(expect);
         }
         #endregion
+
+        /// <summary>
+        /// 取得AccountData
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<AccountDataModel> GetAccountData()
+        {
+            var sourceData = new List<AccountDataModel>();
+            using (var sr = new StreamReader(@"AccountData.csv"))
+            using (var reader = new CsvReader(sr, CultureInfo.InvariantCulture))
+            {
+                var records = reader.GetRecords<AccountDataModel>();
+                sourceData.AddRange(records);
+            }
+
+            return sourceData;
+        }
     }
 }
