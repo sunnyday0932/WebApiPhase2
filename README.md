@@ -11,3 +11,4 @@ API：
 Unit-Test：
 * 1、[單元測試 - 6](https://sunnyday0932.github.io/2021/%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6-6/)。
 * 2、[單元測試 - 7](https://sunnyday0932.github.io/2021/%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6-7/)。
+* 3、[單元測試 - 8(CsvHelper、AutoFixture)](https://sunnyday0932.github.io/2021/%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6-8csvhelperautofixture/)。
