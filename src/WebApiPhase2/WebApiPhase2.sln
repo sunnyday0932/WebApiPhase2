@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.Unit-Test", "3.Unit-Test"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiPhase2ServiceTests", "WebApiPhase2Tests\WebApiPhase2ServiceTests.csproj", "{0FF42C9A-1319-41ED-A3B7-1F048C5BEC16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiPhase2RepositoryTests", "WebApiPhase2RepositoryTests\WebApiPhase2RepositoryTests.csproj", "{08B9DB73-68CC-40F9-AC75-7F64CB10172F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiPhase2RepositoryTests", "WebApiPhase2RepositoryTests\WebApiPhase2RepositoryTests.csproj", "{08B9DB73-68CC-40F9-AC75-7F64CB10172F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
