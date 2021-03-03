@@ -11,7 +11,7 @@ namespace WebApiPhase2RepositoryTests.TestUtilites
             public const string Database =
                 @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog={0};Integrated Security=True;MultipleActiveResultSets=True";
 
-            public static string Master =>
+            public static string Master =
                 @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;";
         }
     }
