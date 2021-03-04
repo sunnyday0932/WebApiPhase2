@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,39 +9,25 @@ namespace WebApiPhase2RepositoryTests
     [TestClass]
     public class TestHook
     {
-        internal static TestSettings CurrentTestSetting { get; set; }
-
-        private static string DatabaseType { get; set; }
-
-        internal static string DatabaseIp { get; set; }
-
-        private static string DatabaseName => "TestDB";
-
-        /// <summary>
-        /// Connection string
-        /// </summary>
-        internal static string DatabaseConnectionString => string.Format(TestDbConnections.LocalDB.Database, DatabaseName);
+        internal static string SampleDbConnection =>
+            string.Format(TestDbConnenction.LocalDb.LocalDbConnectionString, DatabaseName.SampleDB);
 
         [AssemblyInitialize]
-        [Timeout(300)]
         public static void AssemblyInitialize(TestContext context)
         {
-            TestLocalDbProcess.CreateDatabase(TestDbConnections.LocalDB.Master, DatabaseName);
-
-            AssertionOptions.AssertEquivalencyUsing(options =>
+            var sampleDbDatabase = new TestDbUtilities(DatabaseName.SampleDB);
+            if (sampleDbDatabase.IsLocalDbExists())
             {
-                options.Using<DateTime>(x => x.Subject.Should().BeCloseTo(x.Expectation))
-                .WhenTypeIs<DateTime>();
-
-                return options;
-            });
+                sampleDbDatabase.DeleteLocalDb();
+            }
+            sampleDbDatabase.CreateDatabase();
         }
 
         [AssemblyCleanup]
         public static void AssemblyCleanup()
         {
-            TestLocalDbProcess.DestroyDatabase(TestDbConnections.LocalDB.Master, DatabaseName);
+            var defaultDatabase = new TestDbUtilities(DatabaseName.Default);
+            defaultDatabase.DeleteLocalDb(SampleDbConnection);
         }
-
     }
 }

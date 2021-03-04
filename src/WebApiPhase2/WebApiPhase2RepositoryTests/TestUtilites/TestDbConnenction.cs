@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WebApiPhase2RepositoryTests.TestUtilites
+﻿namespace WebApiPhase2RepositoryTests.TestUtilites
 {
-    public class TestDbConnections
+    public class TestDbConnenction
     {
-        public class LocalDB
+        public class LocalDb
         {
-            public const string Database =
+            public const string LocalDbConnectionString =
                 @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog={0};Integrated Security=True;MultipleActiveResultSets=True";
 
-            public static string Master =
+            public static string Default =
                 @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;";
         }
     }

@@ -1,6 +1,8 @@
-﻿using Dapper;
+﻿using AutoFixture;
+using Dapper;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NSubstitute;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -14,18 +16,15 @@ using WebApiPhase2RepositoryTests.TestUtilites;
 namespace WebApiPhase2RepositoryTests
 {
     [TestClass]
+    [DeploymentItem(@"DbScripts\Create.sql")]
+    [DeploymentItem(@"DbScripts\Insert.sql")]
     public class AccountRepositoryTest
     {
-        private static string DatabaseConnectionString => TestHook.DatabaseConnectionString;
-
         private IDatabaseHelper _DatabaseHelper { get; set; }
-
-        private TestContext _TestContext { get; set; }
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context)
         {
-            DropTable();
             CreateTable();
             PrepareData();
         }
@@ -33,53 +32,42 @@ namespace WebApiPhase2RepositoryTests
         [ClassCleanup]
         public static void ClassCleanup()
         {
-            DropTable();
-        }
-
-        private static void CreateTable()
-        {
-            using var conn = new SqlConnection(DatabaseConnectionString);
+            using var conn = new SqlConnection(TestHook.SampleDbConnection);
             conn.Open();
-            using var trans = conn.BeginTransaction();
-            var filePath = Path.Combine("DbScript", "Create.sql");
-            var script = File.ReadAllText(filePath);
-            conn.Execute(sql: script, transaction: trans);
-            trans.Commit();
-        }
-
-        private static void PrepareData()
-        {
-            using var conn = new SqlConnection(DatabaseConnectionString);
-            conn.Open();
-            using var trans = conn.BeginTransaction();
-            var filePath = Path.Combine("DbScript", "Insert.sql");
-            var script = File.ReadAllText(filePath);
-            conn.Execute(sql: script, transaction: trans);
-            trans.Commit();
-        }
-
-        private static void DropTable()
-        {
-            using var conn = new SqlConnection(DatabaseConnectionString);
-            conn.Open();
-            var sqlCommand = DatabaseCommands.DropTable("Users");
+            var sqlCommand = TableCommands.DropTable("Users");
             conn.Execute(sqlCommand);
         }
 
         [TestInitialize]
         public void TestInitialize()
         {
-            this._DatabaseHelper = new DatabaseHelper(DatabaseConnectionString);
+            this._DatabaseHelper = Substitute.For<IDatabaseHelper>();
+
+            this._DatabaseHelper
+                .GetConnection()
+                .Returns(new SqlConnection(TestHook.SampleDbConnection));
         }
 
-        [TestCleanup]
-        public void TestCleanup()
+        private static void CreateTable()
         {
-            using var conn = new SqlConnection(DatabaseConnectionString);
+            using var conn = new SqlConnection(TestHook.SampleDbConnection);
             conn.Open();
-            var sqlCommand = DatabaseCommands.TruncateTable("Users");
-            conn.Execute(sqlCommand);
+            using var trans = conn.BeginTransaction();
+            var script = File.ReadAllText(@"Create.sql");
+            conn.Execute(sql: script, transaction: trans);
+            trans.Commit();
         }
+
+        private static void PrepareData()
+        {
+            using var conn = new SqlConnection(TestHook.SampleDbConnection);
+            conn.Open();
+            using var trans = conn.BeginTransaction();
+            var script = File.ReadAllText(@"Insert.sql");
+            conn.Execute(sql: script, transaction: trans);
+            trans.Commit();
+        }
+
 
         private AccountRepository GetSystemUnderTest()
         {
@@ -90,16 +78,23 @@ namespace WebApiPhase2RepositoryTests
         [TestMethod]
         [TestCategory("AccountRepository")]
         [TestProperty("AccountRepository", "AddAccount")]
-        public void AddAccount_傳入model為null_應拋出ArgumentNullException()
+        public void AddAccount_傳入model_建立成功_應回傳True()
         {
             //arrange
-            AccountCondition condition = null;
+            var fixture = new Fixture();
+            var condition = fixture.Build<AccountCondition>()
+                .With(x => x.Phone, "09111111")
+                .With(x => x.Email, "test@yahoo.com")
+                .With(x => x.Account, "test2444")
+                .With(x => x.Password, "231543214")
+                .With(x => x.ModifyUser, "123423")
+                .Create();
             var sut = this.GetSystemUnderTest();
+
             //act
-            Action actual = () => sut.AddAccount(condition);
+            var actual = sut.AddAccount(condition);
             //assert
-            actual.Should().Throw<ArgumentNullException>()
-                .Which.Message.Contains("model");
+            actual.Should().BeTrue();
         }
     }
 }
