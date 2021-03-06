@@ -24,18 +24,6 @@ namespace WebApiPhase2RepositoryTests
         private static readonly string ConnectionString = TestHook.SampleDbConnection;
         private IDatabaseHelper _DatabaseHelper { get; set; }
 
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext context)
-        {
-            TableCommands.DropTable(ConnectionString, "Users");
-
-            var createScript = File.ReadAllText(@"DbScripts\Create.sql");
-            TableCommands.CreateTable(ConnectionString, createScript);
-
-            var insertScript = File.ReadAllText(@"DbScripts\Insert.sql");
-            TableCommands.Execute(ConnectionString,insertScript);
-        }
-
         [ClassCleanup]
         public static void ClassCleanup()
         {
@@ -45,6 +33,14 @@ namespace WebApiPhase2RepositoryTests
         [TestInitialize]
         public void TestInitialize()
         {
+            TableCommands.DropTable(ConnectionString, "Users");
+
+            var createScript = File.ReadAllText(@"DbScripts\Create.sql");
+            TableCommands.CreateTable(ConnectionString, createScript);
+
+            var insertScript = File.ReadAllText(@"DbScripts\Insert.sql");
+            TableCommands.Execute(ConnectionString, insertScript);
+
             this._DatabaseHelper = new DatabaseHelper(ConnectionString);
         }
 
@@ -101,6 +97,7 @@ namespace WebApiPhase2RepositoryTests
         }
 
         #endregion
+
         #region ForgetPassword
         [TestMethod]
         [TestCategory("AccountRepository")]
