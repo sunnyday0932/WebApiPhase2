@@ -1,6 +1,7 @@
 # WebApiPhase2
 
-示範範例說明連結
+示範範例說明連結。  
+
 API：
 * 1、[dotnet Core WebApi(Phase2) - 0](https://sunnyday0932.github.io/2020/dotnet-core-webapiphase2-0/)。
 * 2、[dotnet Core WebApi(Phase2) - 1](https://sunnyday0932.github.io/2020/dotnet-core-webapiphase2-1/)。
