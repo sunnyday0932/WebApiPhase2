@@ -1,7 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using WebApiPhase2RepositoryTests.TestUtilites;
 
 namespace WebApiPhase2RepositoryTests
@@ -15,19 +14,21 @@ namespace WebApiPhase2RepositoryTests
         [AssemblyInitialize]
         public static void AssemblyInitialize(TestContext context)
         {
-            var sampleDbDatabase = new TestDbUtilities(DatabaseName.SampleDB);
-            if (sampleDbDatabase.IsLocalDbExists())
+            TestLocalDbProcess.CreateDatabase(TestDbConnenction.LocalDb.Default, DatabaseName.SampleDB);
+
+            AssertionOptions.AssertEquivalencyUsing(options =>
             {
-                sampleDbDatabase.DeleteLocalDb();
-            }
-            sampleDbDatabase.CreateDatabase();
+                options.Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation))
+                       .WhenTypeIs<DateTime>();
+
+                return options;
+            });
         }
 
         [AssemblyCleanup]
         public static void AssemblyCleanup()
         {
-            var defaultDatabase = new TestDbUtilities(DatabaseName.Default);
-            defaultDatabase.DeleteLocalDb(SampleDbConnection);
+            TestLocalDbProcess.DestroyDatabase(TestDbConnenction.LocalDb.Default, DatabaseName.SampleDB);
         }
     }
 }
