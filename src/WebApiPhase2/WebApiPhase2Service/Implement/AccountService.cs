@@ -125,14 +125,14 @@ namespace WebApiPhase2Service.Implement
             if (data != null && 
                 data.Any())
             {
-                result = data.Select(x => new AccountDto
+                result = data.Select(rows => new AccountDto
                 {
-                    Phone = ConvertPhoneNumber(x?.Phone),
-                    Account = x?.Account,
-                    CreateDate = x.CreateDate.HasValue ? x.CreateDate.Value.ToString("yyyy/MM/dd") : null,
-                    Email = x?.Email,
-                    ModifyDate = x.ModifyDate.HasValue ? x.ModifyDate.Value.ToString("yyyy/MM/dd") : null,
-                    ModifyUser = x?.ModifyUser
+                    Phone = ConvertPhoneNumber(rows.Phone),
+                    Account = rows.Account,
+                    CreateDate = rows?.CreateDate.Value.ToString("yyyy/MM/dd"),
+                    Email = rows.Email,
+                    ModifyDate = rows?.ModifyDate.Value.ToString("yyyy/MM/dd"),
+                    ModifyUser = rows.ModifyUser
                 });
             }
             else
